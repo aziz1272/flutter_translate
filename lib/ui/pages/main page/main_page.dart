@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_translate/ui/pages/language%20controller/language_controller_page.dart';
 import 'package:translator/translator.dart';
-
 import '../translate_page/translate_page.dart';
 
 class MainPage extends ConsumerWidget {
   static const String id = "main_page";
-
-  
 
   final int index;
 
@@ -24,7 +21,6 @@ class MainPage extends ConsumerWidget {
       ref.watch(trWordProvider.notifier).state = "";
     }
     translator
-
         .translate(inputText.text.trim(),
             from: ref.watch(inpListProvider.notifier).state.isEmpty
                 ? 'uz'
@@ -44,14 +40,14 @@ class MainPage extends ConsumerWidget {
       body: Container(
         child: Column(
           children: [
-            const SizedBox(
-              height: 40,
+            SizedBox(
+              height: size.height * 0.04,
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                top: 20,
-                left: 10,
-                right: 5,
+              padding: EdgeInsets.only(
+                top: size.height * 0.02,
+                left: size.width * 0.03,
+                right: size.width * 0.01,
               ),
               child: Row(
                 children: [
@@ -67,8 +63,11 @@ class MainPage extends ConsumerWidget {
                         Expanded(
                           child: GestureDetector(
                             child: Container(
-                              margin: const EdgeInsets.only(
-                                  top: 7, left: 7, bottom: 7),
+                              margin: EdgeInsets.only(
+                                top: size.height * 0.007,
+                                left: size.width * 0.02,
+                                bottom: size.width * 0.02,
+                              ),
                               padding: const EdgeInsets.only(
                                 top: 8,
                                 bottom: 8,
@@ -85,17 +84,13 @@ class MainPage extends ConsumerWidget {
                                 children: [
                                   Expanded(
                                       child: Text(
-                                    ref
-                                            .watch(inpListProvider.notifier)
-                                            .state
-                                            .isEmpty
+                                    ref.watch(inpListProvider.notifier).state.isEmpty
                                         ? "Uzbekistan"
-                                        : ref
-                                            .watch(inpListProvider.notifier)
+                                        : ref.watch(inpListProvider.notifier)
                                             .state[0],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: size.height*0.016,
                                       overflow: TextOverflow.ellipsis,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -111,28 +106,27 @@ class MainPage extends ConsumerWidget {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => LanguageControllerPage(
-                                    tr: 1,
-                                  ),
+                                  builder: (context) => const LanguageControllerPage(
+                                    tr: 1),
                                 ),
                               );
                             },
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          child: Icon(Icons.translate),
+                          padding: EdgeInsets.only(left: size.width*0.02, right: size.width*0.01),
+                          child: const Icon(Icons.translate),
                         ),
                         Expanded(
                           child: GestureDetector(
                             child: Container(
-                              padding: const EdgeInsets.only(
+                              padding: EdgeInsets.only(
                                 top: 8,
                                 bottom: 8,
                                 left: 10,
-                                right: 10,
+                                right: size.width*0.02,
                               ),
-                              margin: const EdgeInsets.all(7),
+                              margin:  EdgeInsets.only(left: 7, bottom: 7, top: 7, right: size.width*0.02,),
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10),
@@ -143,17 +137,14 @@ class MainPage extends ConsumerWidget {
                                 children: [
                                   Expanded(
                                       child: Text(
-                                    ref
-                                            .watch(outListProvider.notifier)
-                                            .state
-                                            .isEmpty
+                                    ref.watch(outListProvider.notifier).state.isEmpty
                                         ? "English"
                                         : ref
                                             .watch(outListProvider.notifier)
                                             .state[0],
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 16,
+                                      fontSize: size.height*0.016,
                                       overflow: TextOverflow.ellipsis,
                                       fontWeight: FontWeight.w500,
                                     ),
