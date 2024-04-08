@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_translate/repository/services/service_lang.dart';
 import 'package:flutter_translate/ui/pages/main%20page/main_page.dart';
+import '../public variables/public_variables.dart';
 
 class LanguageControllerPage extends ConsumerWidget {
   final int tr;
@@ -13,7 +14,7 @@ class LanguageControllerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select a language"),
+        title: const Text("Select a language"),
       ),
       body: ListView.builder(
         itemCount: langList.length,

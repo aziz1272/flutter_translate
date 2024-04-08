@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_translate/ui/pages/language%20controller/language_controller_page.dart';
+import 'package:flutter_translate/ui/pages/main%20page/input_language.dart';
+import 'package:flutter_translate/ui/pages/main%20page/output_language.dart';
+import 'package:flutter_translate/ui/widgets/widget_colors.dart';
 import 'package:translator/translator.dart';
+import '../../widgets/floating_action_button_page.dart';
+import '../public variables/public_variables.dart';
+import '../text recognation page/text recognation/text_recognation.dart';
 import '../translate_page/translate_page.dart';
 
 class MainPage extends ConsumerWidget {
-  static const String id = "main_page";
-
   final int index;
 
   MainPage({required this.index, super.key});
 
   final translator = GoogleTranslator();
   TextEditingController inputText = TextEditingController();
-  String str = "";
-  List lst = [];
 
   translate(WidgetRef ref, String text) {
+    ref.watch(inputWordProvider.notifier).state = inputText.text;
     if (text == "") {
       ref.watch(trWordProvider.notifier).state = "";
     }
     translator
-        .translate(inputText.text.trim(),
+        .translate(ref.watch(inputWordProvider.notifier).state.trim(),
             from: ref.watch(inpListProvider.notifier).state.isEmpty
                 ? 'uz'
                 : ref.watch(inpListProvider.notifier).state[1],
@@ -55,120 +57,39 @@ class MainPage extends ConsumerWidget {
                       child: Container(
                     height: size.height * 0.06,
                     decoration: BoxDecoration(
-                      color: Color(0xffc5cae9),
+                      color:  WidgetColors.specialLight,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
                       children: [
-                        Expanded(
-                          child: GestureDetector(
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                top: size.height * 0.007,
-                                left: size.width * 0.02,
-                                bottom: size.width * 0.02,
-                              ),
-                              padding: const EdgeInsets.only(
-                                top: 8,
-                                bottom: 8,
-                                left: 10,
-                                right: 10,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    ref.watch(inpListProvider.notifier).state.isEmpty
-                                        ? "Uzbekistan"
-                                        : ref.watch(inpListProvider.notifier)
-                                            .state[0],
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: size.height*0.016,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    maxLines: 1,
-                                  )),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                  Icon(Icons.keyboard_arrow_right),
-                                ],
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const LanguageControllerPage(
-                                    tr: 1),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        const InputLanguage(),
                         Padding(
-                          padding: EdgeInsets.only(left: size.width*0.02, right: size.width*0.01),
+                          padding: EdgeInsets.only(
+                              left: size.width * 0.02,
+                              right: size.width * 0.01),
                           child: const Icon(Icons.translate),
                         ),
-                        Expanded(
-                          child: GestureDetector(
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                top: 8,
-                                bottom: 8,
-                                left: 10,
-                                right: size.width*0.02,
+                        const OutputLanguage(),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const CheckingPage(),
                               ),
-                              margin:  EdgeInsets.only(left: 7, bottom: 7, top: 7, right: size.width*0.02,),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    ref.watch(outListProvider.notifier).state.isEmpty
-                                        ? "English"
-                                        : ref
-                                            .watch(outListProvider.notifier)
-                                            .state[0],
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: size.height*0.016,
-                                      overflow: TextOverflow.ellipsis,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    maxLines: 1,
-                                  )),
-                                  const SizedBox(
-                                    width: 4,
-                                  ),
-                                  const Icon(
-                                      Icons.keyboard_arrow_down_outlined),
-                                ],
+                            );
+                          },
+                          child: CircleAvatar(
+                            backgroundColor: WidgetColors.whiteColor,
+                            radius: size.height * 0.02,
+                            child: const Center(
+                              child: Icon(
+                                Icons.camera_alt_outlined,
                               ),
                             ),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const LanguageControllerPage(
-                                    tr: 2,
-                                  ),
-                                ),
-                              );
-                            },
                           ),
+                        ),
+                        const SizedBox(
+                          width: 9,
                         ),
                       ],
                     ),
@@ -180,27 +101,24 @@ class MainPage extends ConsumerWidget {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 10, right: 10),
-              height: size.height * 0.87,
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              height: size.height * 0.8,
               width: size.width,
-              child: ListView(
+              child: Column(
                 children: [
                   TextField(
                     controller: inputText,
-                    onChanged: (String text) {
-                      translate(ref, text);
-                    },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "Enter the text",
                         hintStyle: TextStyle(
                           fontSize: 24,
-                          color: Colors.grey,
+                          color: WidgetColors.greyColor,
                         )),
-                    maxLines: 22,
-                    style: const TextStyle(
+                    maxLines: 20,
+                    style: TextStyle(
                       fontSize: 19,
-                      color: Colors.black87,
+                      color: WidgetColors.black87Color,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -211,41 +129,25 @@ class MainPage extends ConsumerWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          translate(ref, inputText.text.trim().toString());
-
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => TranslatePage(),
-            ),
-          );
-        },
-        child: Container(
-          margin: EdgeInsets.only(
-            left: 10,
-            right: 10,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () {
+              translate(ref, inputText.text.trim());
+              Future.delayed(const Duration(seconds: 1), () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TranslatePage(),
+                  ),
+                );
+              });
+            },
+            child: FloatingActionButtonPage(text: 'Translate',),
           ),
-          height: size.height * 0.06,
-          decoration: BoxDecoration(
-              color: Color(0xff5c6bc0),
-              borderRadius: BorderRadius.circular(16)),
-          child: const Center(
-            child: Text(
-              "Translate",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 19,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }
 }
 
-final inpListProvider = StateProvider<List>((ref) => []);
-final outListProvider = StateProvider<List>((ref) => []);
-final trWordProvider = StateProvider<String>((ref) => "");
